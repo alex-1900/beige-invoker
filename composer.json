@@ -1,0 +1,31 @@
+{
+    "name": "beige/invoker",
+    "description": "A component for injection and execution.",
+    "keywords": ["invoker", "di", "ioc", "dependency", "injection", "service"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Speed Sonic",
+            "email": "blldxt@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0",
+        "psr/container": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "6.5.14",
+        "beige/psr-11": "^1.0"
+    },
+    "suggest": {
+        "beige/psr-11": "The container implementation of PSR-11."
+    },
+    "autoload": {
+        "psr-4": {
+            "Beige\\Invoker\\": "src"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
