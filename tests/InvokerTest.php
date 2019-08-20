@@ -52,19 +52,30 @@ class InvokerTest extends AbstractTest
         $callable = function() {
             return 1;
         };
-        $invoker->setDefinition($callable);
-        $definition = $this->getProperty($invoker, 'definition');
-        $this->assertEquals($definition, $callable);
+        $invoker->setDefaultTypehintHandler($callable);
+        $typehintHandler = $this->getProperty($invoker, 'typehintHandler');
+        $this->assertEquals($typehintHandler, $callable);
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException \TypeError
      */
     public function testSetDefinitionWithException()
     {
         $container = new Container();
         $invoker = new Invoker($container);
-        $invoker->setDefinition('notCallable');
+        $invoker->setDefaultTypehintHandler('notCallable');
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testSetDefaultTypehintHandlerExceptionHandle()
+    {
+        $container = new Container();
+        $invoker = new Invoker($container);
+        $closure = $this->callMethod($invoker, 'typehintHandlerExceptionFactory', ['testType']);
+        $closure();
     }
 
     public function testCallWithParams()
@@ -217,8 +228,8 @@ class InvokerTest extends AbstractTest
     {
         $container = new Container();
         $invoker = new Invoker($container);
-        $this->setProperty($invoker, 'definition', (function($c, $type) {
-            $this->assertInstanceOf(Container::class, $c);
+        $this->setProperty($invoker, 'typehintHandler', (function($type, $throwException) {
+            $this->assertInstanceOf(Closure::class, $throwException);
             $this->assertEquals(Test::class, $type);
             return new $type;
         })->bindTo($this));

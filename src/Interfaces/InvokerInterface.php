@@ -44,15 +44,15 @@ interface InvokerInterface
     public function callMethod(object $instance, string $method, array $parameters = []);
 
     /**
-     * Set default definition for undefined parameter.
-     * if the parameter $callback return false, the instance proccess will
-     * throw the default Exception, or return what the $callback returns.
+     * Set the undefined type-hint parameter handler
+     * the instance process will inject what the $callback returns.
+     * you can call the second parameter of $callback to throw processor not found exception.
      * 
-     * @param callable $callback
+     * @param callable $handler
      * 
      * @throws \InvalidArgumentException
      * 
      * @return void
      */
-    public function setDefinition(callable $callback);
+    public function setDefaultTypehintHandler(callable $handler);
 }

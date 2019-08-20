@@ -8,15 +8,16 @@ use ReflectionMethod;
 use ReflectionFunction;
 use Psr\Container\ContainerInterface;
 use Beige\Invoker\Interfaces\InvokerInterface;
+use Closure;
 
 class Invoker implements InvokerInterface
 {
     /**
-     * The default type-hint process.
+     * The default type-hint handler.
      * 
      * @var callback|null
      */
-    private $definition = null;
+    private $typehintHandler = null;
 
     /**
      * Container.
@@ -36,23 +37,19 @@ class Invoker implements InvokerInterface
     }
 
     /**
-     * Set default definition for undefined parameter.
-     * if the parameter $callback return false, the instance proccess will
-     * throw the default Exception, or return what the $callback returns.
+     * Set the undefined type-hint parameter handler
+     * the instance process will inject what the $callback returns.
+     * you can call the second parameter of $callback to throw processor not found exception.
      * 
-     * @param callable $callback
+     * @param callable $handler
      * 
      * @throws \InvalidArgumentException
      * 
      * @return void
      */
-    public function setDefinition(callable $callback)
+    public function setDefaultTypehintHandler(callable $handler)
     {
-        if (! is_callable($callback)) {
-            throw new \InvalidArgumentException('Type processor must be callable.');
-        }
-
-        $this->definition = $callback;
+        $this->typehintHandler = $handler;
     }
 
     /**
@@ -160,13 +157,25 @@ class Invoker implements InvokerInterface
             return $this->container->get($typeName);
         }
 
-        if (! is_null($this->definition)) {
-            $result = call_user_func($this->definition, $this->container, $typeName);
-            if ($result !== false) {
-                return $result;
-            }
+        if (! is_null($this->typehintHandler)) {
+            $throwException = $this->typehintHandlerExceptionFactory($typeName);
+            return call_user_func($this->typehintHandler, $typeName, $throwException);
         }
 
         throw new \Exception('There is no processor for the parameter type '. $typeName);
+    }
+
+    /**
+     * The type-hint handler Exception handler.
+     * 
+     * @param string $typeName
+     * 
+     * @return Closure
+     */
+    private function typehintHandlerExceptionFactory(string $typeName): Closure
+    {
+        return function() use ($typeName) {
+            throw new \Exception('There is no processor for the parameter type '. $typeName);
+        };
     }
 }
