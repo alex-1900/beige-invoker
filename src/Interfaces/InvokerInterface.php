@@ -42,4 +42,17 @@ interface InvokerInterface
      * @return mixed The value of method.
      */
     public function callMethod(object $instance, string $method, array $parameters = []);
+
+    /**
+     * Set default definition for undefined parameter.
+     * if the parameter $callback return false, the instance proccess will
+     * throw the default Exception, or return what the $callback returns.
+     * 
+     * @param callable $callback
+     * 
+     * @throws \InvalidArgumentException
+     * 
+     * @return void
+     */
+    public function setDefinition(callable $callback);
 }

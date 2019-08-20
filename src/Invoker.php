@@ -36,13 +36,17 @@ class Invoker implements InvokerInterface
     }
 
     /**
-     * Set the default type processor.
+     * Set default definition for undefined parameter.
+     * if the parameter $callback return false, the instance proccess will
+     * throw the default Exception, or return what the $callback returns.
      * 
-     * @param callback $callback
+     * @param callable $callback
      * 
      * @throws \InvalidArgumentException
+     * 
+     * @return void
      */
-    public function setDefinition($callback)
+    public function setDefinition(callable $callback)
     {
         if (! is_callable($callback)) {
             throw new \InvalidArgumentException('Type processor must be callable.');
@@ -157,7 +161,10 @@ class Invoker implements InvokerInterface
         }
 
         if (! is_null($this->definition)) {
-            return call_user_func($this->definition, $this->container, $typeName);
+            $result = call_user_func($this->definition, $this->container, $typeName);
+            if ($result !== false) {
+                return $result;
+            }
         }
 
         throw new \Exception('There is no processor for the parameter type '. $typeName);

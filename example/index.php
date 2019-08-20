@@ -36,7 +36,7 @@ $invoker = new Invoker($container);
 //     $test->hello($a);
 // }, ['a' => 'world']);
 
-// $instance = $invoker->new(Invable::class, ['what' => 'world']);
+$instance = $invoker->new(Invable::class, ['what' => 'world']);
 // $instance->say();
 
 $instance = new Invable();
