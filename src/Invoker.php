@@ -28,28 +28,16 @@ class Invoker implements InvokerInterface
 
     /**
      * Set the container.
+     * Set the undefined type-hint parameter handler
      * 
      * @param ContainerInterface $container
+     * @param callable $typehintHandler The instance process will inject what the $callback returns.
+     * you can call the second parameter of $callback to throw processor not found exception.
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, callable $typehintHandler = null)
     {
         $this->container = $container;
-    }
-
-    /**
-     * Set the undefined type-hint parameter handler
-     * the instance process will inject what the $callback returns.
-     * you can call the second parameter of $callback to throw processor not found exception.
-     * 
-     * @param callable $handler
-     * 
-     * @throws \InvalidArgumentException
-     * 
-     * @return void
-     */
-    public function setDefaultTypehintHandler(callable $handler)
-    {
-        $this->typehintHandler = $handler;
+        $this->typehintHandler = $typehintHandler;
     }
 
     /**

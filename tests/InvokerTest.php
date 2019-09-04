@@ -48,11 +48,10 @@ class InvokerTest extends AbstractTest
     public function testSetDefinition()
     {
         $container = new Container();
-        $invoker = new Invoker($container);
         $callable = function() {
             return 1;
         };
-        $invoker->setDefaultTypehintHandler($callable);
+        $invoker = new Invoker($container, $callable);
         $typehintHandler = $this->getProperty($invoker, 'typehintHandler');
         $this->assertEquals($typehintHandler, $callable);
     }
@@ -63,8 +62,7 @@ class InvokerTest extends AbstractTest
     public function testSetDefinitionWithException()
     {
         $container = new Container();
-        $invoker = new Invoker($container);
-        $invoker->setDefaultTypehintHandler('notCallable');
+        $invoker = new Invoker($container, 'notCallable');
     }
 
     /**
